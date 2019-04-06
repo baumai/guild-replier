@@ -1,0 +1,31 @@
+<!--
+Guild-Replier - automatic, time-based world of warcraft guild-chat-replier
+Copyright (C) 2019 Berx-Alexstrasza (world of warcraft character of the author)
+
+This file is part of Guild-Replier.
+
+Guild-Replier is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Guild-Replier is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Guild-Replier. If not, see <http://www.gnu.org/licenses/>.
+-->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+  <Frame name="LoadedMessageFrame">
+   <Scripts>
+    <OnLoad>
+     loadedMessage();
+    </OnLoad>
+   </Scripts>
+  </Frame>
+  
+</Ui>

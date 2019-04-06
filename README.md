@@ -2,7 +2,7 @@
 Copyright (C) 2019 Berx-Alexstrasza (world of warcraft character of the author)
 
 ## Contact
-via Twitch messaging system: Brax1234 (username)
+via Twitch messaging system: Brax1234 (username)  
 via WoW: Berx-Alexstrasza
 
 ## CurseForge

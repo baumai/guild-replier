@@ -1,7 +1,7 @@
 ## Interface: 80100
 
 ## Title: Guild-Replier
-## Version: 0.0.1
+## Version: 0.0.2
 ## Notes: automatic, time-based world of warcraft guild-chat-replier
 ## Author: Berx-Alexstrasza (world of warcraft character of the author)
 

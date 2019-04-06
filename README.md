@@ -7,3 +7,6 @@ via WoW: Berx-Alexstrasza
 
 ## CurseForge
 https://wow.curseforge.com/projects/guild-replier
+
+## GitHub
+https://github.com/baumai/guild-replier

@@ -55,6 +55,12 @@ function loadedMessage()
   if DEBUG_MODE then
     print("Guild-Replier DEBUG MODE is ON timestampLastReplierMessageUnixSeconds:" .. timestampLastReplierMessageUnixSeconds);
   end;
+  
+  if DEBUG_MODE then
+    SendChatMessage("hi" .. "  debug", "SAY");
+  else
+	SendChatMessage("hi", "GUILD");
+  end;
 end;
 
 local frame0=CreateFrame("Frame");

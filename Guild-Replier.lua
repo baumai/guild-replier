@@ -21,6 +21,7 @@ along with Guild-Replier. If not, see <http://www.gnu.org/licenses/>.
 local DEBUG_MODE = false;
 local timestampLastReplierMessageUnixSeconds = GetServerTime();
 local timestampLastGuildMessageUnixSeconds = GetServerTime();
+local hiSend = false;
 
 local minimumSecondsBetweenMessagesOrTimer = 60;
 if DEBUG_MODE then
@@ -34,6 +35,16 @@ end;
 
 function writeSomeGossipWhenItIsSilent()
 	local currentUnixSeconds = GetServerTime();
+  
+      -- spaestens eine minute nach login, besser waere ggf. timer runtersetzen
+	  if not hiSend then
+		  if DEBUG_MODE then
+			SendChatMessage("hi" .. "  debug", "SAY");
+		  else
+			SendChatMessage("hi", "GUILD");
+		  end;
+		  hiSend = true;
+	  end;
 
     if (currentUnixSeconds-secondsCheckForSilence) > timestampLastGuildMessageUnixSeconds then
 		timestampLastGuildMessageUnixSeconds = GetServerTime();

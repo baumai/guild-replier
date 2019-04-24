@@ -18,16 +18,20 @@ You should have received a copy of the GNU Affero General Public License
 along with Guild-Replier. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-local DEBUG_MODE = false;
+local DEBUG_MODE = true;
+
+function printWhenDebug(text)
+  if DEBUG_MODE then
+    print("Guild-Replier " .. text);
+  end;
+end;
 
 local timestampLastReplierMessageUnixSeconds = GetServerTime();
 local timestampLastGuildMessageUnixSeconds = GetServerTime();
 
 function loadedMessage()
   print("Guild-Replier loaded (made by Berx-Alexstrasza)");
-  if DEBUG_MODE then
-    print("Guild-Replier DEBUG MODE is ON timestampLastReplierMessageUnixSeconds:" .. timestampLastReplierMessageUnixSeconds);
-  end;
+  printWhenDebug("DEBUG MODE is ON timestampLastReplierMessageUnixSeconds:" .. timestampLastReplierMessageUnixSeconds);
 end;
 
 local minimumSecondsBetweenMessagesOrTimer = 60;
@@ -40,10 +44,18 @@ if DEBUG_MODE then
     secondsCheckForSilence = 10;
 end;
 
-function ownWelcome()
-  sendReplierMessage(getDayTimeBasedGreeting());
+-- TODO so sagt er einmal hi, aber dann niewieder
+-- TODO es müsste nach ein paar stunden reseten, aber nur nach einem login/reload etc. ...
+
+function oftenReplier()
+  printWhenDebug("oftenReplier()");
+  
+  local currentUnixSeconds = GetServerTime();
+  if (currentUnixSeconds - globalSavedVarLastLoginTimestampSeconds) < 10 then
+    sendReplierMessage(getDayTimeBasedGreeting());
+  end;
 end;
-C_Timer.NewTicker(5, ownWelcome, 1);
+C_Timer.NewTicker(10, oftenReplier);
 
 function writeSomeGossipWhenItIsSilent()
 	local currentUnixSeconds = GetServerTime();
@@ -57,6 +69,7 @@ function writeSomeGossipWhenItIsSilent()
 		  "Hier könnte man noch viele Texte ergänzen..."}
 		local answer = array_words[math.random(table.getn(array_words))];
 		
+		-- TODO more texts needed for activation
 		-- sendReplierMessage(answer);
 	end;
 end;
@@ -65,6 +78,7 @@ C_Timer.NewTicker(minimumSecondsBetweenMessagesOrTimer, writeSomeGossipWhenItIsS
 local frame0=CreateFrame("Frame");
 frame0:RegisterEvent("CHAT_MSG_GUILD");
 frame0:RegisterEvent("CHAT_MSG_SYSTEM");
+frame0:RegisterEvent("PLAYER_LOGIN");
 if DEBUG_MODE then
     frame0:RegisterEvent("CHAT_MSG_SAY");
 end;
@@ -75,17 +89,15 @@ frame0:SetScript("OnEvent",function(self,event,msg,byWhomName, arg3,arg4,arg5,ar
 		timestampLastGuildMessageUnixSeconds = GetServerTime();
     end;
     if (event=="CHAT_MSG_GUILD" and myGUID ~= byWhomGUID) or (DEBUG_MODE and event=="CHAT_MSG_SAY") then
-        if DEBUG_MODE then
-            print("first event block");
-        end;
+        printWhenDebug("first event block");
 
         byWhomName, realmName = strsplit("-", byWhomName);
 
         if msg=="hi" or msg=="moin" or msg=="hallo" or msg=="tach" then
-		    --TODO
-            -- sagen auch viele anderen gegenueber, ist jetzt online ist da besser
-            -- printGuildMessage(byWhomName, "welcome");
         elseif msg=="re" or msg=="wieder da" then
+		    --TODO
+            -- sagen auch viele anderen gegenueber, ware jetzt online ist da besser
+            -- printGuildMessage(byWhomName, "welcome");
             printGuildMessage(byWhomName, "returned");
         elseif msg=="bb" or msg=="gn8" or msg=="bin weg" or msg=="bis dann" or msg=="bis später" then
             printGuildMessage(byWhomName, "going");
@@ -93,9 +105,7 @@ frame0:SetScript("OnEvent",function(self,event,msg,byWhomName, arg3,arg4,arg5,ar
     end;
 
     if event=="CHAT_MSG_SYSTEM" or (DEBUG_MODE and event=="CHAT_MSG_SAY") then
-        if DEBUG_MODE then
-            print("second event block msg:" .. msg .. ":");
-        end;
+        printWhenDebug("second event block msg:" .. msg .. ":");
 
         if string.find(msg, "ist jetzt online") then
             msg = strsplit("]", msg);
@@ -105,6 +115,20 @@ frame0:SetScript("OnEvent",function(self,event,msg,byWhomName, arg3,arg4,arg5,ar
         end;
     end;
 
+    if event=="PLAYER_LOGIN" then
+        printWhenDebug("PLAYER_LOGIN");
+
+        if globalSavedVarLastLoginTimestampSeconds == nil then
+		  printWhenDebug("YES update globalSavedVarLastLoginTimestampSeconds");
+		  globalSavedVarLastLoginTimestampSeconds = GetServerTime();
+		else
+		  printWhenDebug("DONT update globalSavedVarLastLoginTimestampSeconds");
+		  if (GetServerTime()-globalSavedVarLastLoginTimestampSeconds) > 3*60*60 then
+		    printWhenDebug("YES update, cause older than three hours, globalSavedVarLastLoginTimestampSeconds");
+		    globalSavedVarLastLoginTimestampSeconds = GetServerTime();
+		  end;
+		end;
+    end;
 end);
 
 function getDayTimeBasedGreeting()
@@ -122,9 +146,7 @@ function getDayTimeBasedGreeting()
 end;
 
 function printGuildMessage(byWhom, actionStr)
-    if DEBUG_MODE then
-        print("printGuildMessage  byWhom:"..byWhom..":  actionStr:"..actionStr..":");
-    end;
+    printWhenDebug("printGuildMessage  byWhom:"..byWhom..":  actionStr:"..actionStr..":");
 
     if actionStr == "welcome" then
 		answer = getDayTimeBasedGreeting() .. " " .. byWhom;
@@ -155,10 +177,9 @@ function printGuildMessage(byWhom, actionStr)
 end;
 
 function sendReplierMessage(text)
-	local txt = "[ " .. text .. " ]";
 	if DEBUG_MODE then
-        SendChatMessage(txt .. "  debug", "SAY");
+        SendChatMessage(text .. "  debug", "SAY");
     else
-		SendChatMessage(txt, "GUILD");
+		SendChatMessage(text, "GUILD");
     end;
 end;

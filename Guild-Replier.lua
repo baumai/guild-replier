@@ -18,7 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with Guild-Replier. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
-local DEBUG_MODE = true;
+local DEBUG_MODE = false;
 
 function printWhenDebug(text)
   if DEBUG_MODE then

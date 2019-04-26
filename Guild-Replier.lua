@@ -117,15 +117,16 @@ frame0:SetScript("OnEvent",function(self,event,msg,byWhomName, arg3,arg4,arg5,ar
 
     if event=="PLAYER_LOGIN" then
         printWhenDebug("PLAYER_LOGIN");
+	    local currentUnixSeconds = GetServerTime();
 
         if globalSavedVarLastLoginTimestampSeconds == nil then
 		  printWhenDebug("YES update globalSavedVarLastLoginTimestampSeconds");
 		  globalSavedVarLastLoginTimestampSeconds = GetServerTime();
 		else
 		  printWhenDebug("DONT update globalSavedVarLastLoginTimestampSeconds");
-		  if (GetServerTime()-globalSavedVarLastLoginTimestampSeconds) > 3*60*60 then
+		  if (currentUnixSeconds - globalSavedVarLastLoginTimestampSeconds) > 3*60*60 then
 		    printWhenDebug("YES update, cause older than three hours, globalSavedVarLastLoginTimestampSeconds");
-		    globalSavedVarLastLoginTimestampSeconds = GetServerTime();
+		    globalSavedVarLastLoginTimestampSeconds = currentUnixSeconds;
 		  end;
 		end;
     end;
